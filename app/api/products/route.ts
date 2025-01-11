@@ -9,7 +9,7 @@ export async function GET(request: Request) {
     await connectToDatabase();
     
     const { searchParams } = new URL(request.url);
-    const filters: any = {};
+    const filters: Record<string, string> = {};
     
     const gender = searchParams.get('gender');
     const category = searchParams.get('category');
