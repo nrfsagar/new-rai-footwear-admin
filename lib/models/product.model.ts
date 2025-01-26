@@ -1,11 +1,6 @@
 import { Schema, model, models } from "mongoose";
 
 const ProductSchema = new Schema({
-  id: {
-    type: String,
-    required: true,
-    unique: true,
-  },
   name: {
     type: String,
     required: true,
@@ -33,7 +28,7 @@ const ProductSchema = new Schema({
     required: true,
   },
   sizes: {
-    type: [Number],
+    type: String,
     required: true,
   },
   description: {
@@ -44,7 +39,7 @@ const ProductSchema = new Schema({
     type: Number,
     required: true,
   },
-  time: {
+  timestamp: {
     type: Date,
     default: Date.now,
   },
@@ -54,11 +49,7 @@ const ProductSchema = new Schema({
   quality: {
     type: String,
     enum: ['Fresh', 'Second'],
-    required: true,
-  },
-  colors: {
-    type: String,
-    required: true,
+    default: "Fresh",
   },
 });
 
