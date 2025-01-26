@@ -61,7 +61,7 @@ const ProductForm = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [imgfile, setImgFiles] = useState<File[]>([]);
   const [cloudinaryUrls, setCloudinaryUrls] = useState<string[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
+  
   console.log(cloudinaryUrls)
   console.log(images)
 
@@ -91,7 +91,7 @@ const ProductForm = () => {
 
     if (filesToUpload.length === 0) return;
 
-    setIsUploading(true);
+    
     try {
       const urls = await Promise.all(
         filesToUpload.map(file => uploadToCloudinary(file))
@@ -101,9 +101,7 @@ const ProductForm = () => {
       setFiles(prev => [...prev, ...filesToUpload]);
     } catch (error) {
       console.error('Upload failed', error);
-    } finally {
-      setIsUploading(false);
-    }
+    } 
   };
 
   // const handleImageUpload = async (newImgFiles: File[]) => {
@@ -142,7 +140,7 @@ const ProductForm = () => {
   
     if (filesToUpload.length === 0) return;
   
-    setIsUploading(true);
+  
     try {
       const urls = await Promise.all(
         filesToUpload.map(file => uploadToCloudinary(file))
@@ -152,8 +150,6 @@ const ProductForm = () => {
       setImgFiles(prev => [...prev, ...filesToUpload]);
     } catch (error) {
       console.error('Upload failed', error);
-    } finally {
-      setIsUploading(false);
     }
   };
 
