@@ -17,6 +17,7 @@ export async function GET(request: Request) {
 
     if (gender) filters.gender = gender;
     if (category) filters.category = category;
+    if (subcategory) filters.subcategory = subcategory;
      
 
     const products = await Product.find(filters).lean();

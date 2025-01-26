@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -55,7 +55,7 @@ enum Subcategory {
 
 
 const ProductForm = () => {
-  const router = useRouter();
+  
   const [images, setImages] = useState<string[]>([]);
   
   const [files, setFiles] = useState<File[]>([]);
