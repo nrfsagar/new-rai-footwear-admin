@@ -343,7 +343,7 @@ const ProductForm = () => {
           
           <ImageUpload
       id="Other-images"
-      label="Other Design"
+      label="Similar Design"
       files={files}
       setFiles={handleFileUpload}
       // isUploading={isUploading}
