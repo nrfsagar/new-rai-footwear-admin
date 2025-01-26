@@ -200,7 +200,7 @@ const ProductForm = () => {
   return (
     <Card className="max-w-4xl mx-auto">
       <CardHeader>
-        <CardTitle>Add New Product</CardTitle>
+        <CardTitle>Add New Products</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
