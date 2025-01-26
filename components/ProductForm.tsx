@@ -329,8 +329,8 @@ const ProductForm = () => {
           </div>
 
           <Separator />
-          <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="description">Product Image</Label>
+          
+          
           <ImageUpload
       id="product-images"
       label="Product Images"
@@ -338,9 +338,9 @@ const ProductForm = () => {
       setFiles={handleImageUpload}
       // isUploading={isUploading}
     />
-</div>
-<div className="space-y-2 md:col-span-2">
-          <Label htmlFor="description">Other Design</Label>
+
+
+          
           <ImageUpload
       id="Other-images"
       label="Other Design"
@@ -348,7 +348,7 @@ const ProductForm = () => {
       setFiles={handleFileUpload}
       // isUploading={isUploading}
     />
-    </div>
+   
     
           <div className="flex justify-end pt-4">
             <Button
