@@ -5,7 +5,7 @@ import ProductForm from '@/components/ProductForm';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Package, Trash2, PenSquare, Link as LinkIcon, Loader2 } from 'lucide-react';
+import { Plus, Package, Trash2, PenSquare, Loader2 } from 'lucide-react';
 import { deleteProduct } from '@/lib/actions/actions';
 import {
   Select,
@@ -54,7 +54,7 @@ export default function Home() {
       const response = await axios.get(url);
       
       if (Array.isArray(response.data)) {
-        setProducts(response.data.sort((a:any, b:any) => new Date(b.updatetime).getTime() - new Date(a.updatetime).getTime()));
+        setProducts(response.data)//.sort((a:any, b:any) => new Date(b.updatetime).getTime() - new Date(a.updatetime).getTime()));
       } else {
         setProducts([]);
       }
