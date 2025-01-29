@@ -460,13 +460,7 @@ const ProductForm = () => {
     }
   };
 
-  const resetForm = () => {
-    form.reset();
-    setImages([]);
-    setCloudinaryUrls([]);
-    setFiles([]);
-    setImgFiles([]);
-  };
+  
 
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
