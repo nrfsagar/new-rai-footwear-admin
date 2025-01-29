@@ -41,6 +41,8 @@
 
 "use client"
 
+"use client"
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -48,13 +50,12 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Package2 } from 'lucide-react';
 import { updateStock } from '@/lib/actions/actions';
 
-interface PageProps {
-  params: {
-    edit: string;
-  }
+type Props = {
+  searchParams?: { [key: string]: string | string[] | undefined };
+  params: { edit: string };
 }
 
-const Page = ({ params }: PageProps) => {
+const StockUpdateComponent = ({ params }: Props) => {
   const [stock, setStock] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -68,7 +69,6 @@ const Page = ({ params }: PageProps) => {
       }
     } catch (error) {
       alert("Failed to update stock");
-      alert(error)
     } finally {
       setIsLoading(false);
     }
@@ -114,4 +114,4 @@ const Page = ({ params }: PageProps) => {
   );
 };
 
-export default Page;
+export default StockUpdateComponent;
