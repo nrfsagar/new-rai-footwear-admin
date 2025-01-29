@@ -86,7 +86,7 @@ export default function Home() {
   return (
     <div className="container mx-auto p-4 space-y-8">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
-        <h1 className="text-2xl md:text-3xl font-bold">Admin Dashboard</h1>
+        <h1 className="text-2xl md:text-3xl font-bold">NRF Admin Dashboard</h1>
         
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full md:w-auto">
           <div className="w-full sm:w-auto">

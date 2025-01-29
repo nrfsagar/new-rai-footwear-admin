@@ -71,20 +71,20 @@ export async function addProduct(data: ProductFormData) {
   }
   
 
-  // // export async function updateUser(_id: string, x: number) {
-  // //   try {
-  // //     await dbConnect();
+  export async function updateStock(id: string, x: number) {
+    try {
+      await connectToDatabase();
   
-  // //     const updatedUser = await Rate.findOneAndUpdate(
-  // //       { _id },
-  // //       { $set: { x } },
-  // //       { new: true }
-  // //     );
+      const updatedUser = await Product.findOneAndUpdate(
+        { _id:id },
+        { stock:  x  },
+        { new: true }
+      );
   
-  // //     if (!updatedUser) throw new Error("User update failed");
+      if (!updatedUser) throw new Error("User update failed");
       
-  // //     return JSON.parse(JSON.stringify(updatedUser));
-  // //   } catch (error) {
-  // //     console.log(error);
-  // //   }
-  // // }
+      return JSON.parse(JSON.stringify(updatedUser));
+    } catch (error) {
+      console.log(error);
+    }
+  }

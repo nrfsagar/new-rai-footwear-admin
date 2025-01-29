@@ -460,13 +460,13 @@ const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     }
   };
 
-  const resetForm = () => {
-    form.reset();
-    setImages([]);
-    setCloudinaryUrls([]);
-    setFiles([]);
-    setImgFiles([]);
-  };
+  // const resetForm = () => {
+  //   form.reset();
+  //   setImages([]);
+  //   setCloudinaryUrls([]);
+  //   setFiles([]);
+  //   setImgFiles([]);
+  // };
 
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
@@ -480,13 +480,18 @@ const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       const result = await addProduct(productData);
       
       if (result !== undefined) {
-        setShowSuccess(true);
-        resetForm();
-        if (onSuccess) onSuccess();
         
+        alert("Your Product Is Added ")
+        setImages([])
+        setFiles([])
+        setImgFiles([])
+        setCloudinaryUrls([])
+        setShowSuccess(true);
+
         setTimeout(() => {
           setShowSuccess(false);
         }, 3000);
+      
       }
     } catch (error) {
       console.error('Failed to add product:', error);
