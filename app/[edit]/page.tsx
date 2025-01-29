@@ -1,44 +1,3 @@
-// "use client"
-// import { Button } from '@/components/ui/button';
-// import { Input } from '@/components/ui/input';
-// import { updateStock } from '@/lib/actions/actions';
-// import React, { useState } from 'react'
-
-// const page = ({params}:any) => {
-//   // const page = await getInstaPageById(params.edit);
-//   const [stock,setStock]=useState<string>('')
-//   const handleSubmit=async()=>{
-//       const update=await updateStock(params.edit,Number(stock))
-//       if (update){
-//           alert("this product stock get updated")
-//       }
-//   }
-  
-//   return (
-//     <div>
-//       <Input 
-//               type="number" 
-//               placeholder="Enter New Stock" 
-//               value={stock}
-//               onChange={(e:any) => {
-//                 setStock(e.target.value);
-                
-//               }}
-//               className="w-full"
-              
-//             />
-//             <Button 
-//             onClick={handleSubmit} 
-//             className="w-full" 
-//           >
-            
-//           </Button>
-//     </div>
-//   )
-// }
-
-// export default page
-
 "use client"
 
 "use client"
@@ -50,12 +9,20 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Package2 } from 'lucide-react';
 import { updateStock } from '@/lib/actions/actions';
 
-type Props = {
-  searchParams?: { [key: string]: string | string[] | undefined };
-  params: { edit: string };
+// type Props = {
+//   searchParams?: { [key: string]: string | string[] | undefined };
+//   params: { edit: string };
+// }
+
+interface PageParams {
+  edit: string;
 }
 
-const StockUpdateComponent = ({ params }: Props) => {
+interface Props {
+  params: PageParams;
+}
+
+const StockUpdateComponent = async ({ params }: Props) => {
   const [stock, setStock] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
