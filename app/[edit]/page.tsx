@@ -69,6 +69,7 @@ const StockUpdateComponent = ({ params }: Props) => {
       }
     } catch (error) {
       alert("Failed to update stock");
+      alert(error)
     } finally {
       setIsLoading(false);
     }
