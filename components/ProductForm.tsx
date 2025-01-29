@@ -396,7 +396,7 @@ interface FormData {
   quality: string;
 }
 
-const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
+const ProductForm = () => {
   const [images, setImages] = useState<string[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [imgfile, setImgFiles] = useState<File[]>([]);
@@ -460,13 +460,13 @@ const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     }
   };
 
-  // const resetForm = () => {
-  //   form.reset();
-  //   setImages([]);
-  //   setCloudinaryUrls([]);
-  //   setFiles([]);
-  //   setImgFiles([]);
-  // };
+  const resetForm = () => {
+    form.reset();
+    setImages([]);
+    setCloudinaryUrls([]);
+    setFiles([]);
+    setImgFiles([]);
+  };
 
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
@@ -490,7 +490,7 @@ const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
 
         setTimeout(() => {
           setShowSuccess(false);
-        }, 3000);
+        }, 10000);
       
       }
     } catch (error) {
