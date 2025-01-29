@@ -53,22 +53,22 @@ export async function addProduct(data: ProductFormData) {
   //   revalidatePath('/admin');
   // }
   
-  // export async function deleteProduct(id: string) {
-  //   await connectToDatabase();
-  //   await Product.findByIdAndDelete(id);
-  //   revalidatePath('/admin');
-  // }
+  export async function deleteProduct(id: string) {
+    await connectToDatabase();
+    await Product.findByIdAndDelete(id);
+    revalidatePath('/admin');
+  }
   
-  // export async function getProducts() {
-  //   await connectToDatabase();
-  //   try {
-  //     const products = await Product.find({}).lean();
-  //     return products;
-  //   } catch (error) {
-  //     console.error('Error fetching products:', error);
-  //     return [];
-  //   }
-  // }
+  export async function getProducts() {
+    await connectToDatabase();
+    try {
+      const products = await Product.find({}).lean();
+      return products;
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      return [];
+    }
+  }
   
 
   // // export async function updateUser(_id: string, x: number) {
