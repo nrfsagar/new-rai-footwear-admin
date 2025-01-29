@@ -34,9 +34,9 @@ export default function Home() {
   
   const subcategories: SubcategoriesType = {
     all:["all"],
-    shoe: ['Eva', 'Air sole', 'Foam', 'Formal', 'School shoes', 'China'],
-    sandals: ['Filone', 'Air', 'Pu', 'Fancy', 'China', 'Cross'],
-    slippers: ['Pu', 'Air', 'Eva', 'Cross', 'Wacker', 'Pu-fancy', 'China'],
+    shoe: ['All','Eva', 'Air-sole', 'Foam', 'Formal', 'School-shoes', 'China'],
+    sandals: ['All','Filone', 'Air', 'Pu', 'Fancy', 'China', 'Cross'],
+    slippers: ['All','Pu', 'Air', 'Eva', 'Cross', 'Wacker', 'Pu-fancy', 'China'],
   };
 
   const loadProducts = useCallback(async () => {
@@ -113,7 +113,7 @@ export default function Home() {
               </SelectTrigger>
               <SelectContent>
                 {subcategories[category].map((subcat) => (
-                  <SelectItem key={subcat} value={subcat}>
+                  <SelectItem key={subcat} value={subcat.toLocaleLowerCase()}>
                     {subcat}
                   </SelectItem>
                 ))}
