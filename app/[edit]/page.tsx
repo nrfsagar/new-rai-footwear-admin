@@ -22,7 +22,7 @@ interface Props {
   params: PageParams;
 }
 
-const StockUpdateComponent = async ({ params }: Props) => {
+const StockUpdateComponent =  ({ params }: Props) => {
   const [stock, setStock] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
