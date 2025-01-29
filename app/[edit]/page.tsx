@@ -48,7 +48,13 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Package2 } from 'lucide-react';
 import { updateStock } from '@/lib/actions/actions';
 
-const Page = ({ params }: { params: { edit: string } }) => {
+interface PageProps {
+  params: {
+    edit: string;
+  }
+}
+
+const Page = ({ params }: PageProps) => {
   const [stock, setStock] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -61,7 +67,8 @@ const Page = ({ params }: { params: { edit: string } }) => {
         setStock('');
       }
     } catch (error) {
-      alert("Failed to update stock:"+error);
+      alert("Failed to update stock");
+      alert(error)
     } finally {
       setIsLoading(false);
     }
