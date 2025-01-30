@@ -54,7 +54,7 @@ export default function Home() {
       const response = await axios.get(url);
       
       if (Array.isArray(response.data)) {
-        setProducts(response.data)//.sort((a:any, b:any) => new Date(b.updatetime).getTime() - new Date(a.updatetime).getTime()));
+        setProducts(response.data.sort((a:any, b:any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
       } else {
         setProducts([]);
       }
@@ -79,8 +79,7 @@ export default function Home() {
     setRefreshing(true);
     loadProducts();
   };
-  console.log(category)
-  console.log(subcategory)
+  
   
 
   return (

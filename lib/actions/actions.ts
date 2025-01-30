@@ -57,7 +57,7 @@ export async function addProduct(data: ProductFormData) {
   export async function deleteProduct(id: string) {
     await connectToDatabase();
     await Product.findByIdAndDelete(id);
-    revalidatePath('/admin');
+    revalidatePath('/');
   }
   
   export async function getProducts() {
