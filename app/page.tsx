@@ -207,7 +207,7 @@ export default function Home() {
                         )}
 
                         <div className="flex gap-2 pt-2">
-                          <Link href={`/edit/${product._id}`} className="flex-1">
+                          <Link href={`/${product._id}`} className="flex-1">
                             <Button
                               variant="outline"
                               className="w-full flex items-center gap-2"

@@ -345,8 +345,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, CheckCircle2 } from "lucide-react";
+
+import { Loader2  } from "lucide-react";
 import ImageUpload from './ImageUpload';
 import { uploadToCloudinary } from '@/lib/cloudinary';
 import { addProduct } from '@/lib/actions/actions';
@@ -402,7 +402,7 @@ const ProductForm = () => {
   const [imgfile, setImgFiles] = useState<File[]>([]);
   const [cloudinaryUrls, setCloudinaryUrls] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
+  
   
   const form = useForm<FormData>({
     defaultValues: {
@@ -480,11 +480,11 @@ const ProductForm = () => {
         setFiles([])
         setImgFiles([])
         setCloudinaryUrls([])
-        setShowSuccess(true);
-
-        setTimeout(() => {
-          setShowSuccess(false);
-        }, 10000);
+        setIsSubmitting(false);
+        
+        
+          
+        
       
       }
     } catch (error) {
@@ -496,14 +496,7 @@ const ProductForm = () => {
 
   return (
     <div className="space-y-4">
-      {showSuccess && (
-        <Alert className="bg-green-50 border-green-200">
-          <CheckCircle2 className="h-4 w-4 text-green-600" />
-          <AlertDescription className="text-green-700">
-            Product added successfully!
-          </AlertDescription>
-        </Alert>
-      )}
+      
 
       <Card className="max-w-4xl mx-auto">
         <CardHeader>
