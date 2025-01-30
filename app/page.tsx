@@ -54,7 +54,7 @@ export default function Home() {
       const response = await axios.get(url);
       
       if (Array.isArray(response.data)) {
-        setProducts(response.data.sort((a:any, b:any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
+        setProducts(response.data.sort((a, b) => new Date(b.timestamp).valueOf() - new Date(a.timestamp).valueOf()));
       } else {
         setProducts([]);
       }
