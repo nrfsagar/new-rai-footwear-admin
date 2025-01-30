@@ -1,6 +1,5 @@
 "use client"
 
-"use client"
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -14,22 +13,27 @@ import { updateStock } from '@/lib/actions/actions';
 //   params: { edit: string };
 // }
 
-interface PageParams {
-  edit: string;
-}
+// interface PageParams {
+//   edit: string;
+// }
 
-interface Props {
-  params: PageParams;
-}
+// interface Props {
+//   params: PageParams;
+// }
 
-const StockUpdateComponent =  ({ params }: Props) => {
+const StockUpdateComponent =  ({
+  params,
+}: {
+  params: Promise<{ edit: string }>}) => {
   const [stock, setStock] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
+  
 
   const handleSubmit = async () => {
     try {
+      const id = (await params).edit
       setIsLoading(true);
-      const update = await updateStock(params.edit, Number(stock));
+      const update = await updateStock(id, Number(stock));
       if (update) {
         alert("This product stock has been updated");
         setStock('');
