@@ -19,6 +19,7 @@ export async function addProduct(data: ProductFormData) {
   
    
     await newProduct.save();
+    return JSON.parse(JSON.stringify(newProduct));
     revalidatePath('/admin');
   }
   
