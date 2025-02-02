@@ -6,27 +6,42 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
 
-export default function NotificationPage() {
-  const [title, setTitle] = useState('');
-  const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState({ type: '', message: '' });
+'use client';
 
-  const handleSubmit = async (e:any) => {
+
+import { NotificationPayload, ApiResponse } from '@/types/notification';
+
+interface NotificationStatus {
+  type: 'success' | 'error' | '';
+  message: string;
+}
+
+export default function NotificationPage() {
+  const [title, setTitle] = useState<string>('');
+  const [message, setMessage] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [status, setStatus] = useState<NotificationStatus>({ type: '', message: '' });
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setLoading(true);
     setStatus({ type: '', message: '' });
 
     try {
+      const payload: NotificationPayload = {
+        title,
+        message,
+      };
+
       const response = await fetch('/api/send-notification', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, message }),
+        body: JSON.stringify(payload),
       });
 
-      const data = await response.json();
+      const data = await response.json() as ApiResponse<unknown>;
 
       if (data.success) {
         setStatus({
@@ -41,7 +56,7 @@ export default function NotificationPage() {
     } catch (error) {
       setStatus({
         type: 'error',
-        message: error instanceof Error ? error.message : 'Failed to send notification'
+        message: error instanceof Error ? error.message : 'An unknown error occurred'
       });
     } finally {
       setLoading(false);
