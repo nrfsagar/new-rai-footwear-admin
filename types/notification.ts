@@ -16,4 +16,16 @@ export interface NotificationPayload {
     data?: T;
     error?: string;
   }
+
+  export interface INotificationDevice extends Document {
+    token: string;
+    user?: string;
+    lastActive: Date;
+    createdAt: Date;
+  }
+  
+  export interface RegisterDeviceRequest {
+    token: string;
+    userId?: string;
+  }
   
