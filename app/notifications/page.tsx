@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
 
-'use client';
+
 
 
 import { NotificationPayload, ApiResponse } from '@/types/notification';
