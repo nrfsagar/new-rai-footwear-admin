@@ -64,8 +64,8 @@ export default function NotificationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-2xl mx-auto">
+    <div className="min-h-screen flex justify-center items-center bg-gray-50 p-8">
+      <div className="w-[90%] md:w-[60%] lg:w-[40%] mx-auto">
         <Card>
           <CardHeader>
             <CardTitle>Send Push Notification</CardTitle>
