@@ -1,5 +1,6 @@
 import React from 'react';
 import { Bell, Database } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -9,7 +10,7 @@ export default function Home() {
           <h1 className="text-2xl font-bold text-gray-800 mb-6">NRF Admin Dashboard</h1>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <a
+            <Link
               href="/dataupdate"
               className="group flex items-center p-4 bg-white border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-all duration-200"
             >
@@ -20,9 +21,9 @@ export default function Home() {
                 <h2 className="font-semibold text-gray-800">Product List Update</h2>
                 <p className="text-sm text-gray-500">Manage and update product information</p>
               </div>
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/notifications"
               className="group flex items-center p-4 bg-white border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-all duration-200"
             >
@@ -33,7 +34,7 @@ export default function Home() {
                 <h2 className="font-semibold text-gray-800">Send Notifications</h2>
                 <p className="text-sm text-gray-500">Broadcast messages to users</p>
               </div>
-            </a>
+            </Link>
           </div>
         </div>
       </nav>
