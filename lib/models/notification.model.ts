@@ -16,6 +16,12 @@ const AppNotificationSchema = new Schema({
         type: Date,
         default: Date.now,
       },
+      platform:{
+        type: String,
+      },
+      email:{
+        type: String
+      },
       createdAt: {
         type: Date,
         default: Date.now,

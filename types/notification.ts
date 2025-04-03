@@ -27,5 +27,7 @@ export interface NotificationPayload {
   export interface RegisterDeviceRequest {
     token: string;
     userId?: string;
+    platform:string
+    email:string
   }
   
