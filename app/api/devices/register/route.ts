@@ -1,9 +1,16 @@
-
-
 import { NextRequest, NextResponse } from 'next/server';
 import AppNotification from "@/lib/models/notification.model";
 import { connectToDatabase } from "@/lib/mongoose";
-import { INotificationDevice, RegisterDeviceRequest, ApiResponse } from '@/types/notification';
+import { INotificationDevice, ApiResponse } from '@/types/notification';
+
+interface RegisterDeviceRequest {
+  token: string;
+  email?: string;
+  name?: string;
+  phone?: string;
+  timestamp?: string;
+  
+}
 
 export async function POST(
   req: NextRequest
@@ -12,7 +19,7 @@ export async function POST(
     await connectToDatabase();
 
     const body = await req.json() as RegisterDeviceRequest;
-    const { token, userId,email,platform } = body;
+    const { token, email, name, phone, timestamp } = body;
 
     if (!token) {
       return NextResponse.json(
@@ -24,14 +31,16 @@ export async function POST(
       );
     }
 
-    // Update or create device token
+    // Update or create device token with new fields
     const device = await AppNotification.findOneAndUpdate(
       { token },
       { 
-        token,email,platform,
-        user: userId || null,
-        lastActive: new Date()
+        token,
+        email,
+        name,
+        phone,
         
+        lastActive: timestamp || new Date().toISOString(),
       },
       { upsert: true, new: true }
     );

@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, models } from "mongoose";
+import  { Schema, model, models } from "mongoose";
 
 const AppNotificationSchema = new Schema({
     token: {
@@ -6,18 +6,22 @@ const AppNotificationSchema = new Schema({
         required: true,
         unique: true,
         index: true,
-      },
-      user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+      }, 
+      name: {
+        type: String,
         required: false,
       },
-      lastActive: {
+      phone: {  
+        type: String,
+        required: false,
+      },
+      timestamp: {
         type: Date,
         default: Date.now,
       },
-      platform:{
-        type: String,
+      xvalue:{
+        type: Number,
+        default: 0,
       },
       email:{
         type: String

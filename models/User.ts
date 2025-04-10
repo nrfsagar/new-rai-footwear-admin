@@ -27,6 +27,15 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  notificationToken:{
+    type: String,
+    required: false,
+  },
+
+  xvalue:{
+    type: Number,
+    default: 0,
+  },
   lastLoginAt: {
     type: Date,
     default: Date.now,
