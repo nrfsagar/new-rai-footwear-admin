@@ -24,6 +24,7 @@ export async function PATCH(
 
     return NextResponse.json({ success: true, device: updatedDevice });
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: 'Update failed' },
       { status: 500 }
