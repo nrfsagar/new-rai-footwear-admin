@@ -8,6 +8,7 @@ export async function GET() {
     const devices = await AppNotification.find({}).sort({ createdAt: -1 });
     return NextResponse.json({ devices });
   } catch (error) {
+    console.log(error);
     return NextResponse.json({ error: 'Failed to fetch devices' }, { status: 500 });
   }
 }
