@@ -1,22 +1,32 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from "@/lib/mongoose";
 import AppNotification from "@/lib/models/notification.model";
 
 export async function PATCH(
-  request: Request,
+  req: NextRequest,
   { params }: { params: { id: string } }
-) {
+): Promise<NextResponse> {
   try {
     await connectToDatabase();
-    const body = await request.json();
+    const body = await req.json();
     const updatedDevice = await AppNotification.findByIdAndUpdate(
       params.id,
       { $set: body },
       { new: true }
     );
-    return NextResponse.json(updatedDevice);
+
+    if (!updatedDevice) {
+      return NextResponse.json(
+        { error: 'Device not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true, device: updatedDevice });
   } catch (error) {
-    console.log(error);
-    return NextResponse.json({ error: 'Update failed' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Update failed' },
+      { status: 500 }
+    );
   }
 }
