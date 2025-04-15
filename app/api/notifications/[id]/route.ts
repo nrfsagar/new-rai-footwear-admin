@@ -2,19 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from "@/lib/mongoose";
 import AppNotification from "@/lib/models/notification.model";
 
-interface RouteParams {
-  params: {
-    id: string;
-  };
-}
-
 export async function PATCH(
   req: NextRequest,
-  context: RouteParams
+  { params }: { params: { id: string } }
 ): Promise<NextResponse> {
   try {
     await connectToDatabase();
-    const { id } = context.params;
+    const id = params.id;
     const body = await req.json();
     const updatedDevice = await AppNotification.findByIdAndUpdate(
       id,
