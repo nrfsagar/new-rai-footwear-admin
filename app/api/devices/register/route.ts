@@ -60,3 +60,48 @@ export async function POST(
     );
   }
 }
+
+export async function GET(req: NextRequest): Promise<NextResponse<ApiResponse<INotificationDevice>>> {
+  try {
+    await connectToDatabase();
+
+    const searchParams = req.nextUrl.searchParams
+    const email = searchParams.get('email')
+
+    if (!email) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'Email is required' 
+        },
+        { status: 400 }
+      );
+    }
+
+    const device = await AppNotification.findOne({ email });
+
+    if (!device) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'Device not found' 
+        },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      device: device.toObject()
+    });
+  } catch (error) {
+    console.error('Error getting device:', error);
+    return NextResponse.json(
+      { 
+        success: false, 
+        message: 'Error getting device' 
+      },
+      { status: 500 }
+    );
+  }
+}
