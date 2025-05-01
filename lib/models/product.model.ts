@@ -51,6 +51,9 @@ const ProductSchema = new Schema({
     enum: ['Fresh', 'Second'],
     default: "Fresh",
   },
+  xvalue: {
+    type: Number, 
+  }
 });
 
 const Product = models?.Product || model("Product", ProductSchema);
