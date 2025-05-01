@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, order });
   } catch (error) {
+    console.log('Error creating order:', error);
     return NextResponse.json(
       { error: 'Failed to create order' },
       { status: 500 }

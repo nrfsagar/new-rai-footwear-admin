@@ -50,6 +50,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true, message: 'Order deleted' });
   } catch (error) {
+    console.log('Error deleting order:', error);
     return NextResponse.json(
       { error: 'Failed to delete order' },
       { status: 500 }
