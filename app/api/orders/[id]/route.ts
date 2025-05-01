@@ -16,9 +16,9 @@ export async function GET(
     }
     
     return NextResponse.json(order, { status: 200 });
-  } catch (error: any) {
-    console.error('Error fetching order:', error.message);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    console.log('Error fetching order:', error);
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 }
 
@@ -36,9 +36,9 @@ export async function PUT(
     }
     
     return NextResponse.json(updatedOrder, { status: 200 });
-  } catch (error: any) {
-    console.error('Error updating order:', error.message);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    console.log('Error updating order:', error);
+    return NextResponse.json({ error: error}, { status: 500 });
   }
 }
 
