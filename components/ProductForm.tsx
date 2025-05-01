@@ -40,17 +40,16 @@ enum Quality {
 
 enum Subcategory {
   Eva = 'Eva',
-  Sole = 'Air-sole',
+  Sport= 'Sport',
   Foam = 'Foam',
   Formal = 'Formal',
-  Shoes = 'School-shoes',
+  School_shoes = 'School-shoes',
   China = 'China',
   Filone = 'Filone',
-  Air = 'Air',
+  Hawaii = 'Hawaii',
   Pu = 'Pu',
   Fancy = 'Fancy',
-  Cross = 'Cross',
-  Wacker = 'Wacker',
+  Crocs = 'Crocs',
   Pu_fancy = 'Pu-fancy'
 }
 
