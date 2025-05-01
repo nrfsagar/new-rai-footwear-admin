@@ -63,6 +63,7 @@ interface FormData {
   sizes: string;
   description: string;
   price: number;
+  xprice: number;
   quality: string;
 }
 
@@ -84,6 +85,7 @@ const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       sizes: '',
       description: '',
       price: 0,
+      xprice: 0,
       quality: ''
     }
   });
@@ -278,6 +280,19 @@ const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
                     step="0.01"
                     className="pl-8 transition-all duration-200 focus:ring-2 focus:ring-primary"
                     placeholder="0.00"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="xprice">xPrice</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
+                  <Input
+                    {...form.register('xprice', { valueAsNumber: true })}
+                    type="number"
+                    step="1"
+                    className="pl-8 transition-all duration-200 focus:ring-2 focus:ring-primary"
+                    placeholder="0"
                   />
                 </div>
               </div>

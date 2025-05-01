@@ -51,7 +51,7 @@ const ProductSchema = new Schema({
     enum: ['Fresh', 'Second'],
     default: "Fresh",
   },
-  xvalue: {
+  xprice: {
     type: Number, 
   }
 });
