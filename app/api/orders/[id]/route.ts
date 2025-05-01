@@ -2,16 +2,23 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from "@/lib/mongoose";
 import Order from "@/lib/models/order.model";
 
+interface RouteContext {
+  params: {
+    id: string;
+  }
+}
+
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+  context: RouteContext
+): Promise<NextResponse> {
   try {
     await connectToDatabase();
+    const { id } = context.params;
     const { quantity } = await req.json();
     
     const order = await Order.findByIdAndUpdate(
-      params.id,
+      id,
       { quantity },
       { new: true }
     );
@@ -35,11 +42,12 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+  context: RouteContext
+): Promise<NextResponse> {
   try {
     await connectToDatabase();
-    const order = await Order.findByIdAndDelete(params.id);
+    const { id } = context.params;
+    const order = await Order.findByIdAndDelete(id);
 
     if (!order) {
       return NextResponse.json(
