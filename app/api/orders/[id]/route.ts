@@ -25,11 +25,11 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+  { params }: { params: Promise<{ id: string }> }
+): Promise<NextResponse> {
   try {
     await connectToDatabase();
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const updatedOrder = await Order.findByIdAndUpdate(id, body, { new: true });
     
@@ -46,11 +46,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+  { params }: { params: Promise<{ id: string }> }
+): Promise<NextResponse> {
   try {
     await connectToDatabase();
-    const { id } = params;
+    const { id } = await params;
     const deletedOrder = await Order.findByIdAndDelete(id);
     
     if (!deletedOrder) {
