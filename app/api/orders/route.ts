@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
- export async function GET(req: NextRequest): Promise<NextResponse> {
+export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
     await connectToDatabase();
     const url = new URL(req.url);
