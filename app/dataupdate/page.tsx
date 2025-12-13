@@ -308,7 +308,7 @@ export default function Page() {
                               variant="outline"
                               size="sm"
                               className="w-full flex items-center gap-2"
-                              disabled={deletingId === product._id}
+                              disabled={deletingId === product._id || !product._id}
                             >
                               <PenSquare className="w-4 h-4" />
                               Edit Stock
@@ -317,9 +317,9 @@ export default function Page() {
                           <Button
                             variant="destructive"
                             size="sm"
-                            onClick={() => handleDeleteClick(product._id, product.name)}
+                            onClick={() => product._id && handleDeleteClick(product._id, product.name)}
                             className="flex-1 flex items-center gap-2"
-                            disabled={deletingId === product._id}
+                            disabled={deletingId === product._id || !product._id}
                           >
                             {deletingId === product._id ? (
                               <>

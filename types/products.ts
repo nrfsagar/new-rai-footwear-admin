@@ -4,8 +4,8 @@ export type Gender = "man" | "women" | "kids"
 export type Category = "shoe" | "sandals" | "slippers"
 export type Quality = "Fresh" | "Second"
 
-export interface Products extends Document {
-  _id: string
+export interface Products {
+  _id?: string
   name: string
   gender: Gender
   category: Category
