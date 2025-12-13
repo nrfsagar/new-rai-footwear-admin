@@ -2,90 +2,148 @@
 
 import { connectToDatabase } from "@/lib/mongoose";
 import Product from "@/lib/models/product.model";
-
 import { revalidatePath } from 'next/cache';
 import { ProductFormData } from "@/types/products";
+import { deleteImagesFromCloudinary } from "@/lib/cloudinary";
 
-
+/**
+ * Add a new product to the database
+ */
 export async function addProduct(data: ProductFormData) {
+  try {
     await connectToDatabase();
-  
-    
-    
-  
-   
-  
-    const newProduct = new Product(data);
-  
-   
-    await newProduct.save();
-    return JSON.parse(JSON.stringify(newProduct));
-    revalidatePath('/admin');
-  }
-  
-  // export async function updateProduct(id: string, formData: FormData) {
-  //   await connectToDatabase();
-  
-  //   const title = formData.get('title') as string;
-  //   const category = formData.get('category') as string;
-  //   const price = parseFloat(formData.get('price') as string);
-    
-  
-  //   // const existingProduct = await Product.findById(id);
-  //   // const primaryImage = formData.get('primaryImage') as File;
-  //   // const secondaryImage1 = formData.get('secondaryImage1') as File;
-  //   // const secondaryImage2 = formData.get('secondaryImage2') as File;
-  
-    
-    
-  //   // const primaryImageUrl = primaryImage ? await uploadImage(primaryImage) : existingProduct.primaryImage;
-  //   // const secondaryImage1Url = secondaryImage1 ? await uploadImage(secondaryImage1) : existingProduct.secondaryImage1;
-  //   // const secondaryImage2Url = secondaryImage2 ? await uploadImage(secondaryImage2) : existingProduct.secondaryImage2;
-  
-  //   // await Product.findByIdAndUpdate(id, {
-  //   //   title,
-  //   //   category,
-  //   //   price,
-  //   //   primaryImage: primaryImageUrl,
-  //   //   secondaryImage1: secondaryImage1Url,
-  //   //   secondaryImage2: secondaryImage2Url,
-  //   // });
-  
-  //   revalidatePath('/admin');
-  // }
-  
-  export async function deleteProduct(id: string) {
-    await connectToDatabase();
-    await Product.findByIdAndDelete(id);
-    revalidatePath('/');
-  }
-  
-  export async function getProducts() {
-    await connectToDatabase();
-    try {
-      const products = await Product.find({}).lean();
-      return products;
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      return [];
-    }
-  }
-  
 
-  export async function updateStock(id: string, x: number) {
-    try {
-      await connectToDatabase();
-  
-      const updatedUser = await Product.findOneAndUpdate(
-        { _id:id },
-        { stock:  x  },
-        { new: true }
-      );
-  
-      if (!updatedUser) throw new Error("User update failed");
-      
-      return JSON.parse(JSON.stringify(updatedUser));
-    } catch (error) {
-      console.log(error);
+    if (!data.name || !data.price || !data.stock === undefined || !data.images?.length) {
+      throw new Error('Missing required fields: name, price, stock, and at least one image are required');
     }
+
+    const newProduct = new Product(data);
+    await newProduct.save();
+    
+    revalidatePath('/dataupdate');
+    revalidatePath('/');
+    
+    return {
+      success: true,
+      data: JSON.parse(JSON.stringify(newProduct)),
+      message: 'Product added successfully'
+    };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to add product';
+    console.error('Error adding product:', error);
+    throw new Error(errorMessage);
   }
+}
+
+/**
+ * Delete a product and its images from Cloudinary
+ */
+export async function deleteProduct(id: string) {
+  try {
+    if (!id || id.trim() === '') {
+      throw new Error('Invalid product ID');
+    }
+
+    await connectToDatabase();
+
+    // Find the product before deleting to get image URLs
+    const product = await Product.findById(id);
+    
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
+    // Collect all image URLs to delete from Cloudinary
+    const imagesToDelete: string[] = [];
+    
+    if (product.images && Array.isArray(product.images)) {
+      imagesToDelete.push(...product.images);
+    }
+    
+    if (product.otherDesignImg && Array.isArray(product.otherDesignImg)) {
+      imagesToDelete.push(...product.otherDesignImg);
+    }
+
+    // Delete images from Cloudinary
+    if (imagesToDelete.length > 0) {
+      const deleteResults = await deleteImagesFromCloudinary(imagesToDelete);
+      const successCount = deleteResults.filter(r => r).length;
+      console.log(`Deleted ${successCount}/${imagesToDelete.length} images from Cloudinary`);
+    }
+
+    // Delete the product from MongoDB
+    await Product.findByIdAndDelete(id);
+    
+    revalidatePath('/dataupdate');
+    revalidatePath('/');
+
+    return {
+      success: true,
+      message: 'Product and associated images deleted successfully'
+    };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to delete product';
+    console.error('Error deleting product:', error);
+    throw new Error(errorMessage);
+  }
+}
+
+/**
+ * Get all products or filtered products
+ */
+export async function getProducts(filters?: Record<string, string>) {
+  try {
+    await connectToDatabase();
+    const query = filters && Object.keys(filters).length > 0 ? filters : {};
+    const products = await Product.find(query).lean();
+    return {
+      success: true,
+      data: products,
+      count: products.length
+    };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to fetch products';
+    console.error('Error fetching products:', errorMessage);
+    throw new Error(errorMessage);
+  }
+}
+
+/**
+ * Update product stock
+ */
+export async function updateStock(id: string, newStock: number) {
+  try {
+    if (!id || id.trim() === '') {
+      throw new Error('Invalid product ID');
+    }
+
+    if (typeof newStock !== 'number' || newStock < 0) {
+      throw new Error('Stock must be a non-negative number');
+    }
+
+    await connectToDatabase();
+
+    const updatedProduct = await Product.findOneAndUpdate(
+      { _id: id },
+      { stock: newStock },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedProduct) {
+      throw new Error('Product not found');
+    }
+
+    revalidatePath('/dataupdate');
+    revalidatePath(`/${id}`);
+    
+    return {
+      success: true,
+      data: JSON.parse(JSON.stringify(updatedProduct)),
+      message: 'Stock updated successfully'
+    };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to update stock';
+    console.error('Error updating stock:', error);
+    throw new Error(errorMessage);
+  }
+}

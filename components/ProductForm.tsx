@@ -15,11 +15,11 @@ import {
   SelectTrigger,
   SelectValue, 
 } from "@/components/ui/select";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, CheckCircle2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import ImageUpload from './ImageUpload';
 import { uploadToCloudinary } from '@/lib/cloudinary';
 import { addProduct } from '@/lib/actions/actions';
+import { useToast } from '@/components/ui/toast';
 
 enum Gender {
   MALE = 'man',
@@ -72,7 +72,8 @@ const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   const [imgfile, setImgFiles] = useState<File[]>([]);
   const [cloudinaryUrls, setCloudinaryUrls] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const { addToast } = useToast();
   
   const form = useForm<FormData>({
     defaultValues: {
@@ -89,6 +90,25 @@ const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     }
   });
 
+  const validateForm = (formData: FormData): boolean => {
+    const errors: Record<string, string> = {};
+
+    if (!formData.name?.trim()) errors.name = 'Product name is required';
+    if (!formData.gender?.trim()) errors.gender = 'Gender is required';
+    if (!formData.category?.trim()) errors.category = 'Category is required';
+    if (!formData.subcategory?.trim()) errors.subcategory = 'Subcategory is required';
+    if (formData.stock < 0) errors.stock = 'Stock cannot be negative';
+    if (!formData.sizes?.trim()) errors.sizes = 'Sizes are required';
+    if (!formData.description?.trim()) errors.description = 'Description is required';
+    if (formData.price <= 0) errors.price = 'Price must be greater than 0';
+    if (formData.xprice < 0) errors.xprice = 'xPrice cannot be negative';
+    if (!formData.quality?.trim()) errors.quality = 'Quality is required';
+    if (images.length === 0) errors.images = 'At least one product image is required';
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleFileUpload = async (newFiles: File[]) => {
     const filesToUpload = newFiles.filter(
       newFile => !files.some(existingFile => 
@@ -104,8 +124,11 @@ const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       );
       setCloudinaryUrls(prev => [...prev, ...urls]);
       setFiles(prev => [...prev, ...filesToUpload]);
+      addToast(`${filesToUpload.length} design image(s) uploaded successfully`, 'success');
     } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Upload failed';
       console.error('Upload failed', error);
+      addToast(`Design image upload failed: ${errorMsg}`, 'error');
     }
   };
 
@@ -126,8 +149,11 @@ const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       );
       setImages(prev => [...prev, ...urls]);
       setImgFiles(prev => [...prev, ...filesToUpload]);
+      addToast(`${filesToUpload.length} product image(s) uploaded successfully`, 'success');
     } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Upload failed';
       console.error('Upload failed', error);
+      addToast(`Product image upload failed: ${errorMsg}`, 'error');
     }
   };
 
@@ -137,9 +163,15 @@ const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     setCloudinaryUrls([]);
     setFiles([]);
     setImgFiles([]);
+    setValidationErrors({});
   };
 
   const handleSubmit = async (formData: FormData) => {
+    if (!validateForm(formData)) {
+      addToast('Please fill in all required fields correctly', 'error');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const productData = {
@@ -150,17 +182,17 @@ const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
 
       const result = await addProduct(productData);
       
-      if (result !== undefined) {
-        setShowSuccess(true);
+      if (result.success) {
+        addToast(result.message || 'Product added successfully!', 'success');
         resetForm();
         if (onSuccess) onSuccess();
-        
-        setTimeout(() => {
-          setShowSuccess(false);
-        }, 3000);
+      } else {
+        addToast('Failed to add product', 'error');
       }
     } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Failed to add product';
       console.error('Failed to add product:', error);
+      addToast(errorMsg, 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -168,15 +200,6 @@ const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
 
   return (
     <div className="space-y-4">
-      {showSuccess && (
-        <Alert className="bg-green-50 border-green-200">
-          <CheckCircle2 className="h-4 w-4 text-green-600" />
-          <AlertDescription className="text-green-700">
-            Product added successfully!
-          </AlertDescription>
-        </Alert>
-      )}
-
       <Card className="max-w-4xl mx-auto">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -190,18 +213,26 @@ const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="name">Product Name</Label>
+                <Label htmlFor="name">Product Name *</Label>
                 <Input
                   {...form.register('name')}
                   placeholder="Enter product name"
-                  className="transition-all duration-200 focus:ring-2 focus:ring-primary"
+                  className={`transition-all duration-200 focus:ring-2 focus:ring-primary ${
+                    validationErrors.name ? 'border-red-500' : ''
+                  }`}
                 />
+                {validationErrors.name && (
+                  <p className="text-sm text-red-500">{validationErrors.name}</p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="gender">Gender</Label>
-                <Select onValueChange={value => form.setValue('gender', value)}>
-                  <SelectTrigger className="w-full">
+                <Label htmlFor="gender">Gender *</Label>
+                <Select onValueChange={value => {
+                  form.setValue('gender', value);
+                  setValidationErrors(prev => ({ ...prev, gender: '' }));
+                }}>
+                  <SelectTrigger className={`w-full ${validationErrors.gender ? 'border-red-500' : ''}`}>
                     <SelectValue placeholder="Select gender" />
                   </SelectTrigger>
                   <SelectContent>
@@ -216,12 +247,18 @@ const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
                     ))}
                   </SelectContent>
                 </Select>
+                {validationErrors.gender && (
+                  <p className="text-sm text-red-500">{validationErrors.gender}</p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="category">Category</Label>
-                <Select onValueChange={value => form.setValue('category', value)}>
-                  <SelectTrigger className="w-full">
+                <Label htmlFor="category">Category *</Label>
+                <Select onValueChange={value => {
+                  form.setValue('category', value);
+                  setValidationErrors(prev => ({ ...prev, category: '' }));
+                }}>
+                  <SelectTrigger className={`w-full ${validationErrors.category ? 'border-red-500' : ''}`}>
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -236,12 +273,18 @@ const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
                     ))}
                   </SelectContent>
                 </Select>
+                {validationErrors.category && (
+                  <p className="text-sm text-red-500">{validationErrors.category}</p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="subcategory">Subcategory</Label>
-                <Select onValueChange={value => form.setValue('subcategory', value)}>
-                  <SelectTrigger className="w-full">
+                <Label htmlFor="subcategory">Subcategory *</Label>
+                <Select onValueChange={value => {
+                  form.setValue('subcategory', value);
+                  setValidationErrors(prev => ({ ...prev, subcategory: '' }));
+                }}>
+                  <SelectTrigger className={`w-full ${validationErrors.subcategory ? 'border-red-500' : ''}`}>
                     <SelectValue placeholder="Select subcategory" />
                   </SelectTrigger>
                   <SelectContent>
@@ -256,50 +299,68 @@ const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
                     ))}
                   </SelectContent>
                 </Select>
+                {validationErrors.subcategory && (
+                  <p className="text-sm text-red-500">{validationErrors.subcategory}</p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="stock">Stock</Label>
+                <Label htmlFor="stock">Stock *</Label>
                 <Input
                   {...form.register('stock', { valueAsNumber: true })}
                   type="number"
                   min="0"
                   placeholder="Enter stock quantity"
-                  className="transition-all duration-200 focus:ring-2 focus:ring-primary"
+                  className={`transition-all duration-200 focus:ring-2 focus:ring-primary ${
+                    validationErrors.stock ? 'border-red-500' : ''
+                  }`}
                 />
+                {validationErrors.stock && (
+                  <p className="text-sm text-red-500">{validationErrors.stock}</p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="price">Price</Label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
-                  <Input
-                    {...form.register('price', { valueAsNumber: true })}
-                    type="number"
-                    step="0.01"
-                    className="pl-8 transition-all duration-200 focus:ring-2 focus:ring-primary"
-                    placeholder="0.00"
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="xprice">xPrice</Label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
-                  <Input
-                    {...form.register('xprice', { valueAsNumber: true })}
-                    type="number"
-                    step="1"
-                    className="pl-8 transition-all duration-200 focus:ring-2 focus:ring-primary"
-                    placeholder="0"
-                  />
-                </div>
+                <Label htmlFor="price">Price (₹) *</Label>
+                <Input
+                  {...form.register('price', { valueAsNumber: true })}
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  className={`transition-all duration-200 focus:ring-2 focus:ring-primary ${
+                    validationErrors.price ? 'border-red-500' : ''
+                  }`}
+                  placeholder="0.00"
+                />
+                {validationErrors.price && (
+                  <p className="text-sm text-red-500">{validationErrors.price}</p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="quality">Quality</Label>
-                <Select onValueChange={value => form.setValue('quality', value)}>
-                  <SelectTrigger className="w-full">
+                <Label htmlFor="xprice">xPrice (₹)</Label>
+                <Input
+                  {...form.register('xprice', { valueAsNumber: true })}
+                  type="number"
+                  step="1"
+                  min="0"
+                  className={`transition-all duration-200 focus:ring-2 focus:ring-primary ${
+                    validationErrors.xprice ? 'border-red-500' : ''
+                  }`}
+                  placeholder="0"
+                />
+                {validationErrors.xprice && (
+                  <p className="text-sm text-red-500">{validationErrors.xprice}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="quality">Quality *</Label>
+                <Select onValueChange={value => {
+                  form.setValue('quality', value);
+                  setValidationErrors(prev => ({ ...prev, quality: '' }));
+                }}>
+                  <SelectTrigger className={`w-full ${validationErrors.quality ? 'border-red-500' : ''}`}>
                     <SelectValue placeholder="Select quality" />
                   </SelectTrigger>
                   <SelectContent>
@@ -309,53 +370,87 @@ const ProductForm = ({ onSuccess }: { onSuccess?: () => void }) => {
                         value={quality}
                         className="cursor-pointer hover:bg-primary/10"
                       >
-                        {quality.charAt(0).toUpperCase() + quality.slice(1)}
+                        {quality}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+                {validationErrors.quality && (
+                  <p className="text-sm text-red-500">{validationErrors.quality}</p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="sizes">Sizes</Label>
+                <Label htmlFor="sizes">Sizes (comma-separated) *</Label>
                 <Input
                   {...form.register('sizes')}
                   placeholder="e.g., 6,7,8,9,10"
-                  className="transition-all duration-200 focus:ring-2 focus:ring-primary"
+                  className={`transition-all duration-200 focus:ring-2 focus:ring-primary ${
+                    validationErrors.sizes ? 'border-red-500' : ''
+                  }`}
                 />
+                {validationErrors.sizes && (
+                  <p className="text-sm text-red-500">{validationErrors.sizes}</p>
+                )}
               </div>
 
               <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">Description *</Label>
                 <Textarea
                   {...form.register('description')}
                   placeholder="Enter product description"
-                  className="min-h-32 transition-all duration-200 focus:ring-2 focus:ring-primary resize-y"
+                  className={`min-h-32 transition-all duration-200 focus:ring-2 focus:ring-primary resize-y ${
+                    validationErrors.description ? 'border-red-500' : ''
+                  }`}
                 />
+                {validationErrors.description && (
+                  <p className="text-sm text-red-500">{validationErrors.description}</p>
+                )}
               </div>
             </div>
 
             <Separator className="my-8" />
 
             <div className="space-y-6">
-              <ImageUpload
-                id="product-images"
-                label="Product Images"
-                files={imgfile}
-                setFiles={handleImageUpload}
-                
-              />
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <Label htmlFor="product-images">Product Images *</Label>
+                  <span className="text-sm text-gray-500">({images.length} selected)</span>
+                </div>
+                <ImageUpload
+                  id="product-images"
+                  label=""
+                  files={imgfile}
+                  setFiles={handleImageUpload}
+                />
+                {validationErrors.images && (
+                  <p className="text-sm text-red-500 mt-2">{validationErrors.images}</p>
+                )}
+              </div>
 
-              <ImageUpload
-                id="Other-images"
-                label="Similar Design"
-                files={files}
-                setFiles={handleFileUpload}
-               
-              />
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <Label htmlFor="Other-images">Similar Design Images (Optional)</Label>
+                  <span className="text-sm text-gray-500">({cloudinaryUrls.length} selected)</span>
+                </div>
+                <ImageUpload
+                  id="Other-images"
+                  label=""
+                  files={files}
+                  setFiles={handleFileUpload}
+                />
+              </div>
             </div>
 
-            <div className="flex justify-end pt-4">
+            <div className="flex justify-end gap-3 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => resetForm()}
+                disabled={isSubmitting}
+              >
+                Reset
+              </Button>
               <Button
                 type="submit"
                 className="w-full md:w-auto min-w-[200px] relative overflow-hidden transition-all duration-200"
