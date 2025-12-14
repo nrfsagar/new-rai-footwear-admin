@@ -4,7 +4,6 @@ const AppNotificationSchema = new Schema({
     token: {
         type: String,
         required: true,
-        unique: true,
         index: true,
       }, 
       name: {
@@ -24,7 +23,10 @@ const AppNotificationSchema = new Schema({
         default: 0,
       },
       email:{
-        type: String
+        type: String,
+        required: true,
+        unique: true,
+        index: true,
       },
       createdAt: {
         type: Date,
