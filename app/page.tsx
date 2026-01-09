@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bell, Database, Settings, Users } from 'lucide-react';
+import { Bell, Database, Receipt, Settings, Users } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -95,6 +95,37 @@ export default function Home() {
                   <div className="flex-shrink-0 ml-4">
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-neutral-200 bg-white transition-colors group-hover:border-neutral-800 group-hover:bg-black">
                       <Users className="h-6 w-6 text-black group-hover:text-white" />
+                    </div>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="relative">
+                <div className="flex items-center text-sm text-neutral-600 group-hover:text-neutral-200">
+                  <span>Open</span>
+                  <span className="ml-2 transition-transform group-hover:translate-x-1">→</span>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          {/* Orders Card */}
+          <Link
+            href="/orders"
+            className="group block h-full rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+          >
+            <Card className="relative h-full overflow-hidden border border-neutral-200 bg-white transition-colors group-hover:bg-black">
+              <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100" />
+              <CardHeader className="relative pb-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <CardTitle className="text-xl text-black group-hover:text-white">Orders</CardTitle>
+                    <p className="mt-2 text-sm text-neutral-600 group-hover:text-neutral-300">
+                      View pending and submitted orders
+                    </p>
+                  </div>
+                  <div className="flex-shrink-0 ml-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-neutral-200 bg-white transition-colors group-hover:border-neutral-800 group-hover:bg-black">
+                      <Receipt className="h-6 w-6 text-black group-hover:text-white" />
                     </div>
                   </div>
                 </div>

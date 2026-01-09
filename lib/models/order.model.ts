@@ -16,7 +16,8 @@ const OrderSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'confirmed', 'cancelled'],
+    // Keep 'confirmed' for legacy/admin flows and add 'submitted' for the mobile app.
+    enum: ['pending', 'submitted', 'confirmed', 'cancelled'],
     default: 'pending'
   },
   createdAt: {
